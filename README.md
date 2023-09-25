@@ -24,9 +24,26 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+This is a project created to learn [Nest](https://github.com/nestjs/nest) framework with GRAPHQL.
 
 ## Installation
+
+1. Create `.env` file with your database credentials. You can use `.env.example` as a template.
+
+```
+DB_PORT=
+DB_NAME=
+DB_USERNAME=
+DB_PASSWORD=
+```
+
+2. Create database with `docker-compose`.
+
+```bash
+$ docker-compose up -d
+```
+
+3. Install [pnpm](https://pnpm.io/) package manager
 
 ```bash
 $ pnpm install
@@ -58,16 +75,6 @@ $ pnpm run test:e2e
 $ pnpm run test:cov
 ```
 
-## Support
+## API Documentation
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+API Documentation can be found at `/api/v1/docs` route in your web browser
