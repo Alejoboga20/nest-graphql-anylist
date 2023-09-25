@@ -10,6 +10,6 @@ services:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USERNAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-    container_name: blackmarket-db
+    container_name: anylist-db
     volumes:
       - ./postgres:/var/lib/postgresql/data
