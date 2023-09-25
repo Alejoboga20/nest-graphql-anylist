@@ -8,6 +8,7 @@ services:
       - "${DB_PORT}:5432"
     environment:
       POSTGRES_DB: ${DB_NAME}
+      POSTGRESS_HOST: ${DB_HOST}
       POSTGRES_USER: ${DB_USERNAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     container_name: anylist-db
