@@ -6,9 +6,12 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 
 import { User } from './entities/user.entity';
 import { RegisterInput } from '../auth/dto/input/register.input';
+
+const ROUNDS = 10;
 
 @Injectable()
 export class UserService {
@@ -21,7 +24,10 @@ export class UserService {
 
   async create(registerInput: RegisterInput): Promise<User> {
     try {
-      const newUser = this.userRepository.create(registerInput);
+      const newUser = this.userRepository.create({
+        ...registerInput,
+        password: bcrypt.hashSync(registerInput.password, ROUNDS),
+      });
       await this.userRepository.save(newUser);
 
       return newUser;
