@@ -30,7 +30,10 @@ export class UserService {
 
       return user;
     } catch (error) {
-      this.handleDbErrors(error);
+      this.handleDbErrors({
+        code: 'error-001',
+        detail: `User with email ${email} not found`,
+      });
     }
   }
 
@@ -58,6 +61,10 @@ export class UserService {
 
   private handleDbErrors(error: any): never {
     if (error.code === '23505') {
+      throw new BadRequestException(error.detail);
+    }
+
+    if (error.code === 'error-001') {
       throw new BadRequestException(error.detail);
     }
 
