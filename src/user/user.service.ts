@@ -22,6 +22,21 @@ export class UserService {
     private readonly userRepository: Repository<User>,
   ) {}
 
+  async findOneById(id: string): Promise<User> {
+    try {
+      const user = await this.userRepository.findOneOrFail({
+        where: { id },
+      });
+
+      return user;
+    } catch (error) {
+      this.handleDbErrors({
+        code: 'error-001',
+        detail: `User with id ${id} not found`,
+      });
+    }
+  }
+
   async findOneByEmail(email: string): Promise<User> {
     try {
       const user = await this.userRepository.findOneOrFail({
