@@ -22,6 +22,18 @@ export class UserService {
     private readonly userRepository: Repository<User>,
   ) {}
 
+  async findOneByEmail(email: string): Promise<User> {
+    try {
+      const user = await this.userRepository.findOneOrFail({
+        where: { email },
+      });
+
+      return user;
+    } catch (error) {
+      this.handleDbErrors(error);
+    }
+  }
+
   async create(registerInput: RegisterInput): Promise<User> {
     try {
       const newUser = this.userRepository.create({
@@ -38,10 +50,6 @@ export class UserService {
 
   async findAll(): Promise<User> {
     throw new Error('Method not implemented.');
-  }
-
-  async findOne(id: string): Promise<User> {
-    throw new Error(`Method not implemented. ${id}`);
   }
 
   async block(id: string): Promise<User> {
