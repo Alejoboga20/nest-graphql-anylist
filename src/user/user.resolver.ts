@@ -1,13 +1,15 @@
 import { Resolver, Query, Mutation, Args, ID } from '@nestjs/graphql';
 import { UserService } from './user.service';
 import { User } from './entities/user.entity';
+import { ValidRolesArgs } from './dtos/args/roles.args';
 
 @Resolver(() => User)
 export class UserResolver {
   constructor(private readonly userService: UserService) {}
 
-  @Query(() => [User], { name: 'user' })
-  async findAll(): Promise<User> {
+  @Query(() => [User], { name: 'users' })
+  async findAll(@Args() validRolesArgs: ValidRolesArgs): Promise<User> {
+    console.log({ validRolesArgs });
     return this.userService.findAll();
   }
 
