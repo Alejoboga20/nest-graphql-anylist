@@ -52,6 +52,15 @@ export class AuthService {
     return user;
   }
 
+  revalidateToken(user: User): AuthResponseType {
+    const token = this.generateJwt(user.id);
+
+    return {
+      user,
+      token,
+    };
+  }
+
   private generateJwt(id: string) {
     return this.jwtService.sign({ id });
   }

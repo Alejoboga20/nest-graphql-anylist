@@ -29,7 +29,6 @@ export class AuthResolver {
   @Query(() => AuthResponseType, { name: 'revalidateToken' })
   @UseGuards(JwtAuthGuard)
   revalidateToken(@CurrentUser() user: User): AuthResponseType {
-    console.log({ user });
-    throw new Error('Resolver not implemented');
+    return this.authService.revalidateToken(user);
   }
 }
