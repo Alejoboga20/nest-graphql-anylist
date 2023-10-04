@@ -1,4 +1,4 @@
-import { UseGuards } from '@nestjs/common';
+import { ParseUUIDPipe, UseGuards } from '@nestjs/common';
 import { Resolver, Query, Mutation, Args, ID } from '@nestjs/graphql';
 
 import { UserService } from './user.service';
@@ -23,8 +23,12 @@ export class UserResolver {
   }
 
   @Query(() => User, { name: 'user' })
-  async findOne(@Args('id', { type: () => ID }) id: string): Promise<string> {
-    return `This action returns a #${id} user`;
+  async findOne(
+    @Args('id', { type: () => ID }, ParseUUIDPipe) id: string,
+    @CurrentUser([ValidRoles.ADMIN, ValidRoles.SUPER_USER]) user: User,
+  ): Promise<User> {
+    console.log({ user });
+    return this.userService.findOneById(id);
   }
 
   @Mutation(() => User)
