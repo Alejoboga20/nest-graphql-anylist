@@ -68,12 +68,7 @@ export class UserService {
   }
 
   async findAll(roles: ValidRoles[]): Promise<User[]> {
-    if (roles.length === 0)
-      return this.userRepository.find({
-        relations: {
-          lastUpdateBy: true,
-        },
-      });
+    if (roles.length === 0) return this.userRepository.find();
 
     const users = await this.userRepository
       .createQueryBuilder()
