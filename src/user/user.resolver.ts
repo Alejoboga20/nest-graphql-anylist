@@ -1,4 +1,4 @@
-import { ParseUUIDPipe, UseGuards } from '@nestjs/common';
+import { Logger, ParseUUIDPipe, UseGuards } from '@nestjs/common';
 import { Resolver, Query, Mutation, Args, ID } from '@nestjs/graphql';
 
 import { UserService } from './user.service';
@@ -11,6 +11,8 @@ import { ValidRoles } from 'src/auth/enums/valid-roles.enum';
 @Resolver(() => User)
 @UseGuards(JwtAuthGuard)
 export class UserResolver {
+  private logger: Logger = new Logger('UserResolver');
+
   constructor(private readonly userService: UserService) {}
 
   @Query(() => [User], { name: 'users' })
@@ -18,7 +20,8 @@ export class UserResolver {
     @Args() validRolesArgs: ValidRolesArgs,
     @CurrentUser([ValidRoles.ADMIN, ValidRoles.SUPER_USER]) user: User,
   ): Promise<User[]> {
-    console.log({ user });
+    this.logger.log(`User ${user.id} is trying to get all users`);
+
     return this.userService.findAll(validRolesArgs.roles);
   }
 
@@ -27,12 +30,18 @@ export class UserResolver {
     @Args('id', { type: () => ID }, ParseUUIDPipe) id: string,
     @CurrentUser([ValidRoles.ADMIN, ValidRoles.SUPER_USER]) user: User,
   ): Promise<User> {
-    console.log({ user });
+    this.logger.log(`User ${user.id} is trying to get user ${id}`);
+
     return this.userService.findOneById(id);
   }
 
-  @Mutation(() => User)
-  async blockUser(@Args('id', { type: () => ID }) id: string): Promise<User> {
-    return this.userService.block(id);
+  @Mutation(() => User, { name: 'blockUser' })
+  async blockUser(
+    @Args('id', { type: () => ID }, ParseUUIDPipe) id: string,
+    @CurrentUser([ValidRoles.ADMIN]) user: User,
+  ): Promise<User> {
+    this.logger.log(`User ${user.id} is trying to block user ${id}`);
+
+    return this.userService.block(id, user);
   }
 }
