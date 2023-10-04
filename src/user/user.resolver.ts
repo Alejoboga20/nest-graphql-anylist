@@ -7,6 +7,7 @@ import { ValidRolesArgs } from './dtos/args/roles.args';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { ValidRoles } from 'src/auth/enums/valid-roles.enum';
+import { UpdateUserInput } from './dtos/inputs/update-user.input';
 
 @Resolver(() => User)
 @UseGuards(JwtAuthGuard)
@@ -33,6 +34,14 @@ export class UserResolver {
     this.logger.log(`User ${user.id} is trying to get user ${id}`);
 
     return this.userService.findOneById(id);
+  }
+
+  @Mutation(() => User, { name: 'updateUser' })
+  async updateUser(
+    @Args('updateUserInput') updateUserInput: UpdateUserInput,
+    @CurrentUser([ValidRoles.ADMIN, ValidRoles.SUPER_USER]) user: User,
+  ): Promise<User> {
+    return this.userService.update(updateUserInput.id, updateUserInput, user);
   }
 
   @Mutation(() => User, { name: 'blockUser' })

@@ -11,6 +11,7 @@ import * as bcrypt from 'bcrypt';
 import { User } from './entities/user.entity';
 import { RegisterInput } from '../auth/dto/input/register.input';
 import { ValidRoles } from '../auth/enums/valid-roles.enum';
+import { UpdateUserInput } from './dtos/inputs/update-user.input';
 
 const ROUNDS = 10;
 
@@ -62,6 +63,25 @@ export class UserService {
       await this.userRepository.save(newUser);
 
       return newUser;
+    } catch (error) {
+      this.handleDbErrors(error);
+    }
+  }
+
+  async update(
+    id: string,
+    updateUserInput: UpdateUserInput,
+    adminUser: User,
+  ): Promise<User> {
+    try {
+      const userToUpdate = await this.userRepository.preload({
+        ...updateUserInput,
+      });
+      userToUpdate.lastUpdateBy = adminUser;
+
+      await this.userRepository.save(userToUpdate);
+
+      return { id, ...userToUpdate, lastUpdateBy: adminUser };
     } catch (error) {
       this.handleDbErrors(error);
     }
