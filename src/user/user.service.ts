@@ -10,6 +10,7 @@ import * as bcrypt from 'bcrypt';
 
 import { User } from './entities/user.entity';
 import { RegisterInput } from '../auth/dto/input/register.input';
+import { ValidRoles } from '../auth/enums/valid-roles.enum';
 
 const ROUNDS = 10;
 
@@ -66,8 +67,16 @@ export class UserService {
     }
   }
 
-  async findAll(): Promise<User> {
-    throw new Error('Method not implemented.');
+  async findAll(roles: ValidRoles[]): Promise<User[]> {
+    if (roles.length === 0) return this.userRepository.find();
+
+    const users = await this.userRepository
+      .createQueryBuilder()
+      .andWhere('ARRAY[roles] && ARRAY[:...roles]')
+      .setParameter('roles', roles)
+      .getMany();
+
+    return users;
   }
 
   async block(id: string): Promise<User> {
