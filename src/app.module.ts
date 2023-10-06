@@ -23,6 +23,8 @@ import { AuthModule } from './auth/auth.module';
       synchronize: true,
       autoLoadEntities: true,
     }),
+    /* Basic configuration */
+
     GraphQLModule.forRoot<ApolloDriverConfig>({
       playground: false,
       driver: ApolloDriver,
@@ -30,6 +32,27 @@ import { AuthModule } from './auth/auth.module';
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
     }),
+    /* Advanced configuration to block the schema without the token */
+    /*
+    GraphQLModule.forRootAsync({
+      driver: ApolloDriver,
+      imports: [AuthModule],
+      inject: [JwtService],
+      useFactory: async (jwtService: JwtService) => ({
+        playground: false,
+        includeStacktraceInErrorResponses: false,
+        autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+        plugins: [ApolloServerPluginLandingPageLocalDefault()],
+        context: ({ req }) => {
+          const token = req.headers.authorization?.replace('Bearer ', '');
+          if (!token) throw new Error('Token not found');
+
+          const payload = jwtService.decode(token);
+          if (!payload || !token) throw new Error('Invalid token');
+        },
+      }),
+    }),
+    */
     ItemsModule,
     UserModule,
     AuthModule,
