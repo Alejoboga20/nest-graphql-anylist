@@ -26,6 +26,11 @@ export class ItemsResolver {
     return this.itemsService.findAll();
   }
 
+  @Query(() => [Item], { name: 'itemsByUser' })
+  async findByUser(@CurrentUser() user: User): Promise<Item[]> {
+    return this.itemsService.findAllByUser(user);
+  }
+
   @Query(() => Item, { name: 'item' })
   async findOne(
     @Args('id', { type: () => ID }, ParseUUIDPipe) id: string,

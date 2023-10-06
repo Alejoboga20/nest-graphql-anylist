@@ -26,6 +26,14 @@ export class ItemsService {
     return items;
   }
 
+  async findAllByUser(user: User): Promise<Item[]> {
+    const items = await this.itemRepository.find({
+      where: { user: { id: user.id } },
+    });
+
+    return items;
+  }
+
   async findOne(id: string): Promise<Item> {
     const item = await this.itemRepository.findOneBy({ id });
     if (!item) throw new NotFoundException(`Item #${id} not found`);

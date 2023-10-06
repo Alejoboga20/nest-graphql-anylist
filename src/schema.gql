@@ -26,6 +26,7 @@ type AuthResponseType {
 
 type Query {
   items: [Item!]!
+  itemsByUser: [Item!]!
   item(id: ID!): Item!
   users(roles: [ValidRoles!] = []): [User!]!
   user(id: ID!): User!
