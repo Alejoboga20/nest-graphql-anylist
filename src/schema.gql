@@ -15,7 +15,6 @@ type User {
 type Item {
   id: ID!
   name: String!
-  quantity: Float!
   quantityUnits: String!
   user: User!
 }
