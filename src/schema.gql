@@ -48,6 +48,7 @@ type Mutation {
   blockUser(id: ID!): User!
   register(registerInput: RegisterInput!): AuthResponseType!
   login(loginInput: LoginInput!): AuthResponseType!
+  seedDatabase: Boolean!
 }
 
 input CreateItemInput {
