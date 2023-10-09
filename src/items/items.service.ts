@@ -34,8 +34,11 @@ export class ItemsService {
     return items;
   }
 
-  async findOne(id: string): Promise<Item> {
-    const item = await this.itemRepository.findOneBy({ id });
+  async findOne(id: string, user: User): Promise<Item> {
+    const item = await this.itemRepository.findOneBy({
+      id,
+      user: { id: user.id },
+    });
     if (!item) throw new NotFoundException(`Item #${id} not found`);
 
     return item;
@@ -50,8 +53,8 @@ export class ItemsService {
     return item;
   }
 
-  async remove(id: string): Promise<Item> {
-    const item = await this.findOne(id);
+  async remove(id: string, user: User): Promise<Item> {
+    const item = await this.findOne(id, user);
     if (!item) throw new NotFoundException(`Item #${id} not found`);
 
     await this.itemRepository.remove(item);
