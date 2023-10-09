@@ -7,7 +7,8 @@ import { UserService } from '../user/user.service';
 import { User } from '../user/entities/user.entity';
 
 import { Item } from '../items/entities/item.entity';
-import { SEED_USERS } from './data/seed-data';
+import { SEED_ITEMS, SEED_USERS } from './data/seed-data';
+import { ItemsService } from '../items/items.service';
 
 @Injectable()
 export class SeedService {
@@ -16,6 +17,7 @@ export class SeedService {
   constructor(
     private readonly configService: ConfigService,
     private readonly userService: UserService,
+    private readonly itemsService: ItemsService,
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     @InjectRepository(Item) private readonly itemRepository: Repository<Item>,
   ) {
@@ -29,12 +31,19 @@ export class SeedService {
         'You are not allowed to seed in production',
       );
     }
-    /* Clean DB */
-    await this.cleanDB();
-    /* Insert users */
-    const adminUser = await this.loadUsers();
+    try {
+      /* Clean DB */
+      await this.cleanDB();
+      /* Insert users */
+      const adminUser = await this.loadUsers();
+      /* Insert items */
+      await this.loadItems(adminUser);
 
-    return true;
+      return true;
+    } catch (error) {
+      console.log({ error });
+      return false;
+    }
   }
 
   private async cleanDB(): Promise<void> {
@@ -52,8 +61,12 @@ export class SeedService {
     return users[0];
   }
 
-  private createItems(): Promise<void> {
-    /* Create items */
-    return;
+  private async loadItems(user: User): Promise<void> {
+    const itemsPromises = [];
+
+    for (const item of SEED_ITEMS) {
+      itemsPromises.push(await this.itemsService.create(item, user));
+    }
+    await Promise.all(itemsPromises);
   }
 }

@@ -19,7 +19,7 @@ export class Item {
   @Field(() => String)
   name: string;
 
-  @Column('text')
+  @Column('text', { nullable: true })
   @Field(() => String)
   quantityUnits: string;
 
