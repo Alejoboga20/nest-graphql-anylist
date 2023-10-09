@@ -1,10 +1,21 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class SeedService {
-  constructor() {}
+  private isProduction: boolean = true;
+
+  constructor(private readonly configService: ConfigService) {
+    this.isProduction =
+      this.configService.get<string>('STATE') === 'production';
+  }
 
   async seed(): Promise<boolean> {
+    if (this.isProduction) {
+      throw new UnauthorizedException(
+        'You are not allowed to seed in production',
+      );
+    }
     /* Clean DB */
 
     return true;
