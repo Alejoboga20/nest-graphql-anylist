@@ -53,6 +53,10 @@ $ docker-compose up -d
 $ pnpm install
 ```
 
+## Seed Database
+
+Execute the `seedDatabase` mutation to seed the Database with data.
+
 ## Running the app
 
 ```bash
