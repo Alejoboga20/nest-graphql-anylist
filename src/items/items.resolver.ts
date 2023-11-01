@@ -7,6 +7,7 @@ import { CreateItemInput, UpdateItemInput } from './dto/inputs';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { User } from '../user/entities/user.entity';
+import { PaginationArgs } from 'src/common/dto/args/pagination.args';
 
 @Resolver(() => Item)
 @UseGuards(JwtAuthGuard)
@@ -27,7 +28,11 @@ export class ItemsResolver {
   }
 
   @Query(() => [Item], { name: 'itemsByUser' })
-  async findByUser(@CurrentUser() user: User): Promise<Item[]> {
+  async findByUser(
+    @CurrentUser() user: User,
+    @Args() paginationArgs: PaginationArgs,
+  ): Promise<Item[]> {
+    console.log({ paginationArgs });
     return this.itemsService.findAllByUser(user);
   }
 
