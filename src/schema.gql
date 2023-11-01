@@ -27,7 +27,7 @@ type AuthResponseType {
 
 type Query {
   items: [Item!]!
-  itemsByUser(limit: Int = 10, offset: Int = 0): [Item!]!
+  itemsByUser(limit: Int = 10, offset: Int = 0, searchTerm: String): [Item!]!
   item(id: ID!): Item!
   users(roles: [ValidRoles!] = []): [User!]!
   user(id: ID!): User!
