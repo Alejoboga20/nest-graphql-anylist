@@ -1,11 +1,10 @@
 import { ArgsType, Field } from '@nestjs/graphql';
-import { IsOptional, IsString, MinLength } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 @ArgsType()
 export class SearchArgs {
   @Field(() => String, { nullable: true })
   @IsOptional()
   @IsString()
-  @MinLength(3)
   searchTerm?: string;
 }

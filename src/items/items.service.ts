@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 
 import { CreateItemInput, UpdateItemInput } from './dto/inputs';
 import { Item } from './entities/item.entity';
@@ -32,11 +32,11 @@ export class ItemsService {
     paginationArgs: PaginationArgs,
     searchArgs: SearchArgs,
   ): Promise<Item[]> {
-    const { searchTerm } = searchArgs;
+    const { searchTerm = '' } = searchArgs;
     const { limit, offset } = paginationArgs;
 
     const items = await this.itemRepository.find({
-      where: { user: { id: user.id } },
+      where: { user: { id: user.id }, name: Like(`%${searchTerm}%`) },
       take: limit,
       skip: offset,
     });
