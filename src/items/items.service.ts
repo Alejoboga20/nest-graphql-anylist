@@ -35,11 +35,24 @@ export class ItemsService {
     const { searchTerm = '' } = searchArgs;
     const { limit, offset } = paginationArgs;
 
-    const items = await this.itemRepository.find({
-      where: { user: { id: user.id }, name: Like(`%${searchTerm}%`) },
-      take: limit,
-      skip: offset,
-    });
+    // const items = await this.itemRepository.find({
+    //   where: { user: { id: user.id }, name: Like(`%${searchTerm}%`) },
+    //   take: limit,
+    //   skip: offset,
+    // });
+    const queryBuilder = this.itemRepository
+      .createQueryBuilder()
+      .take(limit)
+      .skip(offset)
+      .where('"uderId = :userId"', { userId: user.id });
+
+    if (searchTerm) {
+      queryBuilder.andWhere('LOWER(name) like :name', {
+        name: `%${searchTerm.toLowerCase()}%`,
+      });
+    }
+
+    const items = await queryBuilder.getMany();
 
     return items;
   }
