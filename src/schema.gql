@@ -2,6 +2,11 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type List {
+  id: ID!
+  name: String!
+}
+
 type User {
   id: String!
   fullName: String!
@@ -25,10 +30,6 @@ type AuthResponseType {
   token: String!
 }
 
-type List {
-  id: ID!
-}
-
 type Query {
   items: [Item!]!
   itemsByUser(limit: Int = 10, offset: Int = 0, searchTerm: String): [Item!]!
@@ -36,8 +37,8 @@ type Query {
   users(roles: [ValidRoles!] = []): [User!]!
   user(id: ID!): User!
   revalidateToken: AuthResponseType!
-  lists: [List!]!
-  list(id: Int!): List!
+  lists(limit: Int = 10, offset: Int = 0, searchTerm: String): [List!]!
+  list(id: ID!): List!
 }
 
 enum ValidRoles {
@@ -56,8 +57,8 @@ type Mutation {
   login(loginInput: LoginInput!): AuthResponseType!
   seedDatabase: Boolean!
   createList(createListInput: CreateListInput!): List!
-  updateList(updateListInput: UpdateListInput!): List!
-  removeList(id: Int!): List!
+  updateList(updateItemInput: UpdateListInput!): List!
+  removeList(id: ID!): List!
 }
 
 input CreateItemInput {
@@ -92,12 +93,10 @@ input LoginInput {
 }
 
 input CreateListInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  name: String!
 }
 
 input UpdateListInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
+  name: String
+  id: ID!
 }
