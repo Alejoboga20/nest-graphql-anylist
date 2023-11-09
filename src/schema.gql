@@ -5,6 +5,7 @@
 type List {
   id: ID!
   name: String!
+  user: User!
 }
 
 type User {
@@ -16,6 +17,7 @@ type User {
   lastUpdateBy: User
   itemCount: Int!
   userItems(limit: Int = 10, offset: Int = 0, searchTerm: String): [Item!]!
+  userLists(limit: Int = 10, offset: Int = 0, searchTerm: String): [List!]!
 }
 
 type Item {
@@ -36,9 +38,9 @@ type Query {
   item(id: ID!): Item!
   users(roles: [ValidRoles!] = []): [User!]!
   user(id: ID!): User!
-  revalidateToken: AuthResponseType!
   lists(limit: Int = 10, offset: Int = 0, searchTerm: String): [List!]!
   list(id: ID!): List!
+  revalidateToken: AuthResponseType!
 }
 
 enum ValidRoles {
@@ -53,12 +55,12 @@ type Mutation {
   removeItem(id: ID!): Item!
   updateUser(updateUserInput: UpdateUserInput!): User!
   blockUser(id: ID!): User!
-  register(registerInput: RegisterInput!): AuthResponseType!
-  login(loginInput: LoginInput!): AuthResponseType!
-  seedDatabase: Boolean!
   createList(createListInput: CreateListInput!): List!
   updateList(updateItemInput: UpdateListInput!): List!
   removeList(id: ID!): List!
+  register(registerInput: RegisterInput!): AuthResponseType!
+  login(loginInput: LoginInput!): AuthResponseType!
+  seedDatabase: Boolean!
 }
 
 input CreateItemInput {
@@ -81,6 +83,15 @@ input UpdateUserInput {
   isActive: Boolean!
 }
 
+input CreateListInput {
+  name: String!
+}
+
+input UpdateListInput {
+  name: String
+  id: ID!
+}
+
 input RegisterInput {
   email: String!
   fullName: String!
@@ -90,13 +101,4 @@ input RegisterInput {
 input LoginInput {
   email: String!
   password: String!
-}
-
-input CreateListInput {
-  name: String!
-}
-
-input UpdateListInput {
-  name: String
-  id: ID!
 }
