@@ -1,4 +1,4 @@
-import { UseGuards } from '@nestjs/common';
+import { ParseUUIDPipe, UseGuards } from '@nestjs/common';
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 
 import { ListItemService } from './list-item.service';
@@ -18,8 +18,10 @@ export class ListItemResolver {
     return this.listItemService.create(createListItemInput);
   }
 
-  @Query(() => [ListItem], { name: 'listItem' })
-  findAll() {
-    return [];
+  @Query(() => ListItem, { name: 'listItem' })
+  findOne(
+    @Args('id', { type: () => String }, ParseUUIDPipe) id: string,
+  ): Promise<ListItem> {
+    return this.listItemService.findOne(id);
   }
 }
