@@ -14,7 +14,7 @@ type List {
   id: ID!
   name: String!
   user: User!
-  listItem: [ListItem!]!
+  items: [ListItem!]!
 }
 
 type User {
@@ -50,8 +50,8 @@ type Query {
   user(id: ID!): User!
   lists(limit: Int = 10, offset: Int = 0, searchTerm: String): [List!]!
   list(id: ID!): List!
-  revalidateToken: AuthResponseType!
   listItem: [ListItem!]!
+  revalidateToken: AuthResponseType!
 }
 
 enum ValidRoles {
@@ -69,10 +69,10 @@ type Mutation {
   createList(createListInput: CreateListInput!): List!
   updateList(updateItemInput: UpdateListInput!): List!
   removeList(id: ID!): List!
+  createListItem(createListItemInput: CreateListItemInput!): ListItem!
   register(registerInput: RegisterInput!): AuthResponseType!
   login(loginInput: LoginInput!): AuthResponseType!
   seedDatabase: Boolean!
-  createListItem(createListItemInput: CreateListItemInput!): ListItem!
 }
 
 input CreateItemInput {
@@ -104,6 +104,13 @@ input UpdateListInput {
   id: ID!
 }
 
+input CreateListItemInput {
+  quantity: Float = 0
+  completed: Boolean = false
+  listId: ID!
+  itemId: ID!
+}
+
 input RegisterInput {
   email: String!
   fullName: String!
@@ -113,11 +120,4 @@ input RegisterInput {
 input LoginInput {
   email: String!
   password: String!
-}
-
-input CreateListItemInput {
-  quantity: Float = 0
-  completed: Boolean = false
-  listId: ID!
-  itemId: ID!
 }
