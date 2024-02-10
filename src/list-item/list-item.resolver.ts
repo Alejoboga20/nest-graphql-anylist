@@ -20,6 +20,6 @@ export class ListItemResolver {
 
   @Query(() => [ListItem], { name: 'listItem' })
   findAll() {
-    return this.listItemService.findAll();
+    return [];
   }
 }
