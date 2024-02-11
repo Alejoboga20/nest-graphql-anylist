@@ -7,8 +7,12 @@ import { UserService } from '../user/user.service';
 import { User } from '../user/entities/user.entity';
 
 import { Item } from '../items/entities/item.entity';
-import { SEED_ITEMS, SEED_USERS } from './data/seed-data';
+import { SEED_ITEMS, SEED_USERS, SEED_LISTS } from './data/seed-data';
 import { ItemsService } from '../items/items.service';
+import { ListItem } from 'src/list-item/entities/list-item.entity';
+import { List } from 'src/lists/entities/list.entity';
+import { ListsService } from '../lists/lists.service';
+import { ListItemService } from '../list-item/list-item.service';
 
 @Injectable()
 export class SeedService {
@@ -18,6 +22,12 @@ export class SeedService {
     private readonly configService: ConfigService,
     private readonly userService: UserService,
     private readonly itemsService: ItemsService,
+    private readonly listsService: ListsService,
+    private readonly listItemService: ListItemService,
+
+    @InjectRepository(ListItem)
+    private readonly listItemRepository: Repository<ListItem>,
+    @InjectRepository(List) private readonly listRepository: Repository<List>,
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     @InjectRepository(Item) private readonly itemRepository: Repository<Item>,
   ) {
@@ -38,6 +48,15 @@ export class SeedService {
       const adminUser = await this.loadUsers();
       /* Insert items */
       await this.loadItems(adminUser);
+      /* Insert lists */
+      const list = await this.loadLists(adminUser);
+      /* Insert list items */
+      const items = await this.itemsService.findAllByUser(
+        adminUser,
+        { limit: 5, offset: 0 },
+        { searchTerm: '' },
+      );
+      await this.loadListItems(list, items);
 
       return true;
     } catch (error) {
@@ -47,6 +66,12 @@ export class SeedService {
   }
 
   private async cleanDB(): Promise<void> {
+    await this.listItemRepository
+      .createQueryBuilder()
+      .delete()
+      .where({})
+      .execute();
+    await this.listRepository.createQueryBuilder().delete().where({}).execute();
     await this.itemRepository.createQueryBuilder().delete().where({}).execute();
     await this.userRepository.createQueryBuilder().delete().where({}).execute();
   }
@@ -68,5 +93,26 @@ export class SeedService {
       itemsPromises.push(await this.itemsService.create(item, user));
     }
     await Promise.all(itemsPromises);
+  }
+
+  private async loadLists(user: User): Promise<List> {
+    const lists = [];
+
+    for (const list of SEED_LISTS) {
+      lists.push(await this.listsService.create(list, user));
+    }
+
+    return lists[0];
+  }
+
+  private async loadListItems(list: List, items: Item[]): Promise<void> {
+    for (const item of items) {
+      await this.listItemService.create({
+        itemId: item.id,
+        listId: list.id,
+        completed: Math.random() > 0.5 ? true : false,
+        quantity: Math.round(Math.random() * 10),
+      });
+    }
   }
 }

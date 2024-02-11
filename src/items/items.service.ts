@@ -33,7 +33,7 @@ export class ItemsService {
     searchArgs: SearchArgs,
   ): Promise<Item[]> {
     const { searchTerm = '' } = searchArgs;
-    const { limit, offset } = paginationArgs;
+    const { limit = 5, offset = 0 } = paginationArgs;
 
     // const items = await this.itemRepository.find({
     //   where: { user: { id: user.id }, name: Like(`%${searchTerm}%`) },
