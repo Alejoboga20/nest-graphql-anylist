@@ -6,5 +6,5 @@ import { InputType, Field, PartialType, ID } from '@nestjs/graphql';
 export class UpdateListItemInput extends PartialType(CreateListItemInput) {
   @Field(() => ID)
   @IsUUID()
-  id: number;
+  id: string;
 }

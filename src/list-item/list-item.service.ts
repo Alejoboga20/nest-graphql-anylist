@@ -6,6 +6,7 @@ import { CreateListItemInput } from './dto/create-list-item.input';
 import { ListItem } from './entities/list-item.entity';
 import { List } from 'src/lists/entities/list.entity';
 import { PaginationArgs, SearchArgs } from 'src/common/dto/args';
+import { UpdateListItemInput } from './dto/update-list-item.input';
 
 @Injectable()
 export class ListItemService {
@@ -67,5 +68,24 @@ export class ListItemService {
     if (!listItem) throw new NotFoundException('List item not found');
 
     return listItem;
+  }
+
+  async update(
+    id: string,
+    updateListItemInput: UpdateListItemInput,
+  ): Promise<ListItem> {
+    const { itemId, listId, ...rest } = updateListItemInput;
+
+    const listItem = await this.listItemRepository.preload({
+      ...rest,
+      item: { id: itemId },
+      list: { id: listId },
+    });
+
+    if (!listItem) throw new NotFoundException('List item not found');
+
+    const updatedListItem = await this.listItemRepository.save(listItem);
+
+    return updatedListItem;
   }
 }
