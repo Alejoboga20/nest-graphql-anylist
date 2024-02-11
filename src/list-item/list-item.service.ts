@@ -24,7 +24,8 @@ export class ListItemService {
       list: { id: listId },
     });
 
-    const listItem = await this.listItemRepository.save(newListItem);
+    await this.listItemRepository.save(newListItem);
+    const listItem = this.findOne(newListItem.id);
 
     return listItem;
   }
